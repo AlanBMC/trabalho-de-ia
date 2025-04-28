@@ -24,16 +24,29 @@ COR_CASAS = (65, 105, 225)   # Azul "Royal" (Valores 2-13 no CSV)
 
 # Configurações (mantidas como no seu código)
 TAMANHO_BLOCO = 15
-NOME_ARQUIVO = 'coordenad-asmap.csv'
+NOME_ARQUIVO = 'coordernadasmapaco.csv'
 
 def carregar_mapa(nome_arquivo):
     """Carrega o mapa do arquivo CSV."""
+    mapa = []
     try:
         with open(nome_arquivo, 'r', newline='') as arquivo:
             leitor = csv.reader(arquivo)
-            return [list(map(int, linha)) for linha in leitor]
+            for linha in leitor:
+                # Filtra strings vazias antes de converter para int
+                linha_int = [int(valor) for valor in linha if valor.strip()]
+                if linha_int: # Adiciona a linha apenas se não estiver vazia após a filtragem
+                    mapa.append(linha_int)
+            return mapa
+    except FileNotFoundError:
+        print(f"Erro: Arquivo '{nome_arquivo}' não encontrado.")
+        sys.exit(1)
+    except ValueError as e:
+        print(f"Erro ao converter valor no CSV para inteiro: {e}")
+        print("Verifique se o arquivo CSV contém apenas números inteiros e não há células vazias ou vírgulas extras.")
+        sys.exit(1)
     except Exception as e:
-        print(f"Erro ao carregar o mapa: {e}")
+        print(f"Erro inesperado ao carregar o mapa: {e}")
         sys.exit(1)
 
 def obter_cor(valor):

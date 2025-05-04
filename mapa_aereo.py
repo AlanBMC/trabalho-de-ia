@@ -13,35 +13,35 @@ COR_MONTANHOSO = (105, 105, 105)
 COR_INICIO = (0, 255, 0)
 COR_FIM = (255, 0, 0)
 COR_CASAS = (65, 105, 225)
-TAMANHO_BLOCO = 20
+TAMANHO_BLOCO = 15
 NOME_ARQUIVO = 'coordernadasmapaco.csv'
 # Caminho para a sprite sheet (ajuste se necessário)
-# CAMINHO_SPRITE = r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0001.png' # Comentado/Removido
+CAMINHO_SPRITE = r'/home/alan-moraes/Downloads/' # AJUSTE AQUI O CAMINHO PARA O SPRITES NO SEU COMPUTADOR
 CASA_INICIO_PLAYER = 0
 
 # Dados dos Cavaleiros de Bronze
 CAVALEIROS_DATA = [
-    {"nome": "Seiya", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0001.png', "poder": 1.5},
-    {"nome": "Shiryu", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0002.png', "poder": 1.4},
-    {"nome": "Hyoga", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0003.png', "poder": 1.3},
-    {"nome": "Shun", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0004.png', "poder": 1.2},
-    {"nome": "Ikki", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0005.png', "poder": 1.1},
+    {"nome": "Seiya/", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0001.png', "poder": 1.5},
+    {"nome": "Shiryu", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0002.png', "poder": 1.4},
+    {"nome": "Hyoga", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0003.png', "poder": 1.3},
+    {"nome": "Shun", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0004.png', "poder": 1.2},
+    {"nome": "Ikki", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0005.png', "poder": 1.1},
 ]
 
 # Dados dos Cavaleiros de Ouro
 GOLD_SAINTS_DATA = [
-    {"casa": 1, "nome": "Áries", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Afrodite.png', "dificuldade": 50, "map_value": 2},
-    {"casa": 2, "nome": "Touro", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Aioria.png', "dificuldade": 55, "map_value": 3},
-    {"casa": 3, "nome": "Gêmeos", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Mdm.png', "dificuldade": 60, "map_value": 4},
-    {"casa": 4, "nome": "Câncer", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Milo.png', "dificuldade": 70, "map_value": 5},
-    {"casa": 5, "nome": "Leão", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Shaka.png', "dificuldade": 75, "map_value": 6},
-    {"casa": 6, "nome": "Virgem", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Shura.png', "dificuldade": 80, "map_value": 7},
-    {"casa": 7, "nome": "Libra", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\#Aldebaran (Taurus).png', "dificuldade": 85, "map_value": 8},
-    {"casa": 8, "nome": "Escorpião", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\#Athena_Aldebaran.png', "dificuldade": 90, "map_value": 9},
-    {"casa": 9, "nome": "Sagitário", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\#Athena_Dohko.png', "dificuldade": 95, "map_value": 10},
-    {"casa": 10, "nome": "Capricórnio", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\KAMUS.png', "dificuldade": 100, "map_value": 11},
-    {"casa": 11, "nome": "Aquário", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\MU.png', "dificuldade": 110, "map_value": 12},
-    {"casa": 12, "nome": "Peixes", "sprite_sheet": r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\SAGA.png', "dificuldade": 120, "map_value": 13},
+    {"casa": 1, "nome": "Áries", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Afrodite.png', "dificuldade": 50, "map_value": 2},
+    {"casa": 2, "nome": "Touro", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aioria.png', "dificuldade": 55, "map_value": 3},
+    {"casa": 3, "nome": "Gêmeos", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Mdm.png', "dificuldade": 60, "map_value": 4},
+    {"casa": 4, "nome": "Câncer", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Milo.png', "dificuldade": 70, "map_value": 5},
+    {"casa": 5, "nome": "Leão", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shaka.png', "dificuldade": 75, "map_value": 6},
+    {"casa": 6, "nome": "Virgem", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shura.png', "dificuldade": 80, "map_value": 7},
+    {"casa": 7, "nome": "Libra", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Aldebaran (Taurus).png', "dificuldade": 85, "map_value": 8},
+    {"casa": 8, "nome": "Escorpião", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Athena_Aldebaran.png', "dificuldade": 90, "map_value": 9},
+    {"casa": 9, "nome": "Sagitário", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Athena_Dohko.png', "dificuldade": 95, "map_value": 10},
+    {"casa": 10, "nome": "Capricórnio", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/KAMUS.png', "dificuldade": 100, "map_value": 11},
+    {"casa": 11, "nome": "Aquário", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/MU.png', "dificuldade": 110, "map_value": 12},
+    {"casa": 12, "nome": "Peixes", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/SAGA.png', "dificuldade": 120, "map_value": 13},
 ]
 
 class GoldSaint(pygame.sprite.Sprite):

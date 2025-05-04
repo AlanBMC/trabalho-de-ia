@@ -13,43 +13,44 @@ COR_MONTANHOSO = (105, 105, 105)
 COR_INICIO = (0, 255, 0)      # Verde (Assumido como Valor = 1 no CSV)
 COR_FIM = (255, 0, 0)        # Vermelho (Assumido como Valor = 0 no CSV)
 COR_CASAS = (65, 105, 225)   # Azul
-TAMANHO_BLOCO = 20
+TAMANHO_BLOCO = 15
 NOME_ARQUIVO_MAPA = 'coordernadasmapaco.csv' # Confirme o nome
 VALOR_PONTO_INICIAL = 0 
+CAMINHO_SPRITE = r'/home/alan-moraes/Downloads/'
 # --- Informações dos Cavaleiros de Bronze ---
 # Caminhos atualizados conforme sua última informação
 CAVALEIROS_BRONZE_INFO = [
-    {'nome': 'Seiya',  'poder': 1.5, 'sprite_path': r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0001.png'},
-    {'nome': 'Shiryu', 'poder': 1.4, 'sprite_path': r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0002.png'},
-    {'nome': 'Hyoga',  'poder': 1.3, 'sprite_path': r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0003.png'},
-    {'nome': 'Shun',   'poder': 1.2, 'sprite_path': r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0004.png'},
+    {'nome': 'Seiya',  'poder': 1.5, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0001.png'},
+    {'nome': 'Shiryu', 'poder': 1.4, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0002.png'},
+    {'nome': 'Hyoga',  'poder': 1.3, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0003.png'},
+    {'nome': 'Shun',   'poder': 1.2, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0004.png'},
     # Verifique se Ikki é 0005.png ou Ikki de Fênix.png
-    {'nome': 'Ikki',   'poder': 1.1, 'sprite_path': r'c:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Bronze\Saint Seya Chara - 0005.png'},
+    {'nome': 'Ikki',   'poder': 1.1, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0005.png'},
 ]
 # ----------------------------------------------------------
 
 # --- Informações dos Cavaleiros de Ouro ---
 # !!! VERIFIQUE SE OS CAMINHOS ESTÃO CORRETOS !!!
 CAVALEIROS_OURO_INFO = [
-    {'casa': 2, 'nome': 'Mu', 'dificuldade': 50, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\MU.png'},
-    {'casa': 3, 'nome': 'Aldebaran', 'dificuldade': 55, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\#Aldebaran (Taurus).png'},
-    {'casa': 4, 'nome': 'Saga', 'dificuldade': 60, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\SAGA.png'},
-    {'casa': 5, 'nome': 'Máscara da Morte', 'dificuldade': 70, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Mdm.png'},
-    {'casa': 6, 'nome': 'Aiolia', 'dificuldade': 75, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Aioria.png'},
-    {'casa': 7, 'nome': 'Shaka', 'dificuldade': 80, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Shaka.png'},
-    {'casa': 8, 'nome': 'Dohko', 'dificuldade': 85, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\#Athena_Dohko.png'},
-    {'casa': 9, 'nome': 'Milo', 'dificuldade': 90, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Milo.png'},
-    {'casa': 10, 'nome': 'Aiolos', 'dificuldade': 95, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Aiorios.png'},
-    {'casa': 11, 'nome': 'Shura', 'dificuldade': 100, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Athena_Shura.png'},
-    {'casa': 12, 'nome': 'Camus', 'dificuldade': 110, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\KAMUS.png'},
-    {'casa': 13, 'nome': 'Afrodite', 'dificuldade': 120, 'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Ouro\_Afrodite.png'},
+    {'casa': 2, 'nome': 'Mu', 'dificuldade': 50, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/MU.png'},
+    {'casa': 3, 'nome': 'Aldebaran', 'dificuldade': 55, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Aldebaran (Taurus).png'},
+    {'casa': 4, 'nome': 'Saga', 'dificuldade': 60, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/SAGA.png'},
+    {'casa': 5, 'nome': 'Máscara da Morte', 'dificuldade': 70, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Mdm.png'},
+    {'casa': 6, 'nome': 'Aiolia', 'dificuldade': 75, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aioria.png'},
+    {'casa': 7, 'nome': 'Shaka', 'dificuldade': 80, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shaka.png'},
+    {'casa': 8, 'nome': 'Dohko', 'dificuldade': 85, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Athena_Dohko.png'},
+    {'casa': 9, 'nome': 'Milo', 'dificuldade': 90, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Milo.png'},
+    {'casa': 10, 'nome': 'Aiolos', 'dificuldade': 95, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aiorios.png'},
+    {'casa': 11, 'nome': 'Shura', 'dificuldade': 100, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shura.png'},
+    {'casa': 12, 'nome': 'Camus', 'dificuldade': 110, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/KAMUS.png'},
+    {'casa': 13, 'nome': 'Afrodite', 'dificuldade': 120, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Afrodite.png'},
 ]
 # ----------------------------------------------------------
 
 # --- Informação do Cavaleiro de Prata ---
 TREMY_INFO = {
     'nome': 'Sagitta Tremy',
-    'sprite_path': r'C:\Users\8761817\Downloads\Saint Seiya\Cavaleiros de Prata\Athena_Sagita.png'
+    'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Prata/Athena_Sagita.png'
 }
 # ----------------------------------------------------------
 
@@ -86,7 +87,7 @@ class Luta:
         participantes_validos = []
         cavaleiros_mortos_nomes = []
 
-        print(f"\n--- Simulando Batalha (Dificuldade: {dificuldade_casa}) ---")
+        print(f"/n--- Simulando Batalha (Dificuldade: {dificuldade_casa}) ---")
         print(f"Equipe Selecionada: {equipe_nomes}")
 
         # Verifica energia e calcula soma de poder dos participantes válidos
@@ -133,7 +134,7 @@ class Luta:
 
     def reset_energia_cavaleiros(self, energia_inicial=5):
         """Reseta a energia de todos os cavaleiros de bronze para o valor inicial."""
-        print(f"\n--- Resetando Energia para {energia_inicial} ---")
+        print(f"/n--- Resetando Energia para {energia_inicial} ---")
         for cb in self.cavaleiros_bronze:
             cb.energia = energia_inicial
         print("Energia resetada.")

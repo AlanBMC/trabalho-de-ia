@@ -8,6 +8,7 @@ import random
 
 # --- Constantes (CORES AJUSTADAS) ---
 PRETO = (0, 0, 0)
+DELAY_MOVIMENTO = 50 # MUDE AQUI A VELOCIDADE DE MOVIMENTO ENZO INSETO
 BRANCO = (255, 255, 255)
 # Valores do CSV mapeados para Cor e Custo
 TERRENOS_INFO = {
@@ -23,7 +24,7 @@ TAMANHO_BLOCO = 15
 NOME_ARQUIVO_MAPA = 'coordernadasmapaco.csv'
 VALOR_PONTO_INICIAL = 0
 VALOR_PONTO_FINAL = 13
-CAMINHO_SPRITE = r'/home/alan-moraes/Downloads/' # <<< AJUSTE SE NECESSÁRIO
+CAMINHO_SPRITE = r'/home/alan-moraes/Downloads/' # <<< AJUSTE SE NECESSÁRIO PARAO CAMINHOS DAS SPRITES
 # -------------------------------------
 
 # --- Informações Cavaleiros (SEM ALTERAÇÕES) ---
@@ -48,7 +49,7 @@ CAVALEIROS_OURO_INFO = sorted([
     {'casa': 10, 'nome': 'Aiolos', 'dificuldade': 95, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aiorios.png'},
     {'casa': 11, 'nome': 'Shura', 'dificuldade': 100, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shura.png'},
     {'casa': 12, 'nome': 'Camus', 'dificuldade': 110, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/KAMUS.png'},
-    {'casa': 13, 'nome': 'Afrodite', 'dificuldade': 120, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Afrodite.png'},
+    {'casa': 1, 'nome': 'Afrodite', 'dificuldade': 120, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Afrodite.png'},
 ], key=lambda c: c['casa'])
 NUM_CASAS = len(CAVALEIROS_OURO_INFO)
 
@@ -318,7 +319,7 @@ class MapaAereo:
          info_terreno = TERRENOS_INFO.get(valor)
          if info_terreno: return info_terreno['cor']
          # Depois Casas
-         elif isinstance(valor, int) and 2 <= valor <= 13: return COR_CASAS
+         elif isinstance(valor, int) and 1 <= valor <= 12: return COR_CASAS
          # Default
          else: return BRANCO # Para None ou qualquer outro valor
 
@@ -331,7 +332,7 @@ class MapaAereo:
                 # if info_terreno['custo'] == 200:
                 #     print(f"DEBUG Custo: Montanhoso ({valor}) em ({x},{y}) -> Custo 200")
                 return info_terreno['custo']
-            elif valor is not None and (2 <= valor <= 13 or valor == VALOR_PONTO_INICIAL or valor == VALOR_PONTO_FINAL):
+            elif valor is not None and (1 <= valor <= 12 or valor == VALOR_PONTO_INICIAL or valor == VALOR_PONTO_FINAL):
                 return 1 # Custo 1 para casas, início, fim
             else:
                 # Trata None e outros como obstáculo
@@ -351,7 +352,7 @@ class MapaAereo:
         posicoes = {}
         for y, linha in enumerate(self.mapa):
             for x, valor in enumerate(linha):
-                 if isinstance(valor, int) and 2 <= valor <= 13:
+                 if isinstance(valor, int) and 1 <= valor <= 12:
                     if valor not in posicoes:
                         posicoes[valor] = (x, y)
         casas_faltando = [i for i in range(2, 14) if i not in posicoes]
@@ -627,7 +628,7 @@ def simular_caminho_e_lutas_com_visualizacao(caminho_coords, mapa_obj):
     battle_info_display_time = 2500 # Aumenta tempo de exibição da info da batalha
     last_battle_info_time = -battle_info_display_time
     # --- AJUSTE AQUI: Velocidade da animação (maior = mais lento) ---
-    delay_movimento = 50 # ms entre passos de movimento
+    # ms entre passos de movimento
     # --------------------------------------------------------------
 
     print("\n--- Iniciando Simulação com Visualização (Fase 2) ---")
@@ -725,7 +726,7 @@ def simular_caminho_e_lutas_com_visualizacao(caminho_coords, mapa_obj):
         mapa_obj.desenhar_estado_simulacao(texto_info_passo, info_batalha_visivel)
 
         # Pausa para velocidade da visualização
-        mapa_obj.clock.tick(1000 // delay_movimento) # Tenta manter FPS baseado no delay
+        mapa_obj.clock.tick(1000 // DELAY_MOVIMENTO) # Tenta manter FPS baseado no delay
 
         passo_caminho_idx += 1
 

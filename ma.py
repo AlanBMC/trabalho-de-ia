@@ -623,11 +623,11 @@ def simular_caminho_e_lutas_com_visualizacao(caminho_coords, mapa_obj):
     status_final = "Não iniciado"
 
     texto_info_passo = "Iniciando Simulação..."
-    texto_info_batalha = ""
+    
     battle_info_display_time = 2500 # Aumenta tempo de exibição da info da batalha
     last_battle_info_time = -battle_info_display_time
     # --- AJUSTE AQUI: Velocidade da animação (maior = mais lento) ---
-    delay_movimento = 130 # ms entre passos de movimento
+    delay_movimento = 50 # ms entre passos de movimento
     # --------------------------------------------------------------
 
     print("\n--- Iniciando Simulação com Visualização (Fase 2) ---")

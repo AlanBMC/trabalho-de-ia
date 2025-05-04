@@ -409,6 +409,7 @@ class MapaAereo:
             print("Erro Crítico: Posição inicial não encontrada! Tremy não criado.")
             return
         start_x, start_y = pos_inicial
+        
         print(f"Inicializando Cavaleiro de Prata em (col={start_x}, lin={start_y})")
 
         # Cria a instância de Tremy (reutilizando Player)

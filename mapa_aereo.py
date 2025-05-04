@@ -1,275 +1,277 @@
 import pygame
 import csv
 import sys
-import os # Adicionado para manipulação de caminhos
-import time # Adicionado para o temporizador de animação
+import os
+# import time # Não estritamente necessário se update não usar dt
 
-# Constantes
+# --- Constantes ---
 PRETO = (0, 0, 0)
 BRANCO = (255, 255, 255)
 COR_PLANO = (210, 180, 140)
 COR_ROCHOSO = (160, 160, 160)
 COR_MONTANHOSO = (105, 105, 105)
-COR_INICIO = (0, 255, 0)
-COR_FIM = (255, 0, 0)
-COR_CASAS = (65, 105, 225)
+COR_INICIO = (0, 255, 0)      # Verde (Assumido como Valor = 1 no CSV)
+COR_FIM = (255, 0, 0)        # Vermelho (Assumido como Valor = 0 no CSV)
+COR_CASAS = (65, 105, 225)   # Azul
 TAMANHO_BLOCO = 15
-NOME_ARQUIVO = 'coordernadasmapaco.csv'
-# Caminho para a sprite sheet (ajuste se necessário)
-CAMINHO_SPRITE = r'/home/alan-moraes/Downloads/' # AJUSTE AQUI O CAMINHO PARA O SPRITES NO SEU COMPUTADOR
-CASA_INICIO_PLAYER = 0
-
-# Dados dos Cavaleiros de Bronze
-CAVALEIROS_DATA = [
-    {"nome": "Seiya/", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0001.png', "poder": 1.5},
-    {"nome": "Shiryu", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0002.png', "poder": 1.4},
-    {"nome": "Hyoga", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0003.png', "poder": 1.3},
-    {"nome": "Shun", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0004.png', "poder": 1.2},
-    {"nome": "Ikki", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0005.png', "poder": 1.1},
+NOME_ARQUIVO_MAPA = 'coordernadasmapaco.csv' # Confirme o nome
+VALOR_PONTO_INICIAL = 0 
+CAMINHO_SPRITE = r'/home/alan-moraes/Downloads/'
+# --- Informações dos Cavaleiros de Bronze ---
+# Caminhos atualizados conforme sua última informação
+CAVALEIROS_BRONZE_INFO = [
+    {'nome': 'Seiya',  'poder': 1.5, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0001.png'},
+    {'nome': 'Shiryu', 'poder': 1.4, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0002.png'},
+    {'nome': 'Hyoga',  'poder': 1.3, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0003.png'},
+    {'nome': 'Shun',   'poder': 1.2, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0004.png'},
+    # Verifique se Ikki é 0005.png ou Ikki de Fênix.png
+    {'nome': 'Ikki',   'poder': 1.1, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Bronze/Saint Seya Chara - 0005.png'},
 ]
+# ----------------------------------------------------------
 
-# Dados dos Cavaleiros de Ouro
-GOLD_SAINTS_DATA = [
-    {"casa": 1, "nome": "Áries", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Afrodite.png', "dificuldade": 50, "map_value": 2},
-    {"casa": 2, "nome": "Touro", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aioria.png', "dificuldade": 55, "map_value": 3},
-    {"casa": 3, "nome": "Gêmeos", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Mdm.png', "dificuldade": 60, "map_value": 4},
-    {"casa": 4, "nome": "Câncer", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Milo.png', "dificuldade": 70, "map_value": 5},
-    {"casa": 5, "nome": "Leão", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shaka.png', "dificuldade": 75, "map_value": 6},
-    {"casa": 6, "nome": "Virgem", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shura.png', "dificuldade": 80, "map_value": 7},
-    {"casa": 7, "nome": "Libra", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Aldebaran (Taurus).png', "dificuldade": 85, "map_value": 8},
-    {"casa": 8, "nome": "Escorpião", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Athena_Aldebaran.png', "dificuldade": 90, "map_value": 9},
-    {"casa": 9, "nome": "Sagitário", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Athena_Dohko.png', "dificuldade": 95, "map_value": 10},
-    {"casa": 10, "nome": "Capricórnio", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/KAMUS.png', "dificuldade": 100, "map_value": 11},
-    {"casa": 11, "nome": "Aquário", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/MU.png', "dificuldade": 110, "map_value": 12},
-    {"casa": 12, "nome": "Peixes", "sprite_sheet": f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/SAGA.png', "dificuldade": 120, "map_value": 13},
+# --- Informações dos Cavaleiros de Ouro ---
+# !!! VERIFIQUE SE OS CAMINHOS ESTÃO CORRETOS !!!
+CAVALEIROS_OURO_INFO = [
+    {'casa': 2, 'nome': 'Mu', 'dificuldade': 50, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/MU.png'},
+    {'casa': 3, 'nome': 'Aldebaran', 'dificuldade': 55, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Aldebaran (Taurus).png'},
+    {'casa': 4, 'nome': 'Saga', 'dificuldade': 60, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/SAGA.png'},
+    {'casa': 5, 'nome': 'Máscara da Morte', 'dificuldade': 70, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Mdm.png'},
+    {'casa': 6, 'nome': 'Aiolia', 'dificuldade': 75, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aioria.png'},
+    {'casa': 7, 'nome': 'Shaka', 'dificuldade': 80, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shaka.png'},
+    {'casa': 8, 'nome': 'Dohko', 'dificuldade': 85, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Athena_Dohko.png'},
+    {'casa': 9, 'nome': 'Milo', 'dificuldade': 90, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Milo.png'},
+    {'casa': 10, 'nome': 'Aiolos', 'dificuldade': 95, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aiorios.png'},
+    {'casa': 11, 'nome': 'Shura', 'dificuldade': 100, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shura.png'},
+    {'casa': 12, 'nome': 'Camus', 'dificuldade': 110, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/KAMUS.png'},
+    {'casa': 13, 'nome': 'Afrodite', 'dificuldade': 120, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Afrodite.png'},
 ]
+# ----------------------------------------------------------
 
-class GoldSaint(pygame.sprite.Sprite):
-    def __init__(self, x_mapa, y_mapa, sprite_path, nome, dificuldade):
+# --- Informação do Cavaleiro de Prata ---
+TREMY_INFO = {
+    'nome': 'Sagitta Tremy',
+    'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Prata/Athena_Sagita.png'
+}
+# ----------------------------------------------------------
+
+# --- Classe para Gerenciar Lutas ---
+class Luta:
+    def __init__(self, cavaleiros_bronze_lista):
+        """
+        Inicializa o gerenciador de lutas.
+        Args:
+            cavaleiros_bronze_lista (list): Uma lista das instâncias Player dos cav. de bronze.
+        """
+        # Guarda uma referência à lista original de instâncias dos cavaleiros de bronze
+        # Assim, as alterações de energia feitas aqui refletirão nos objetos originais
+        self.cavaleiros_bronze = cavaleiros_bronze_lista
+        # Poderia criar uma cópia se não quisesse alterar os originais diretamente,
+        # mas para a simulação do algoritmo, alterar os originais é geralmente o desejado.
+
+    def simular_batalha(self, dificuldade_casa, equipe_nomes):
+        """
+        Simula uma batalha contra um Cavaleiro de Ouro.
+
+        Args:
+            dificuldade_casa (int): O nível de dificuldade da casa (do Cav. Ouro).
+            equipe_nomes (list): Uma lista de strings com os nomes dos Cav. Bronze
+                                  selecionados para esta batalha (ex: ['Seiya', 'Ikki']).
+
+        Returns:
+            tuple: (tempo_gasto, cavaleiros_mortos_nomes)
+                   tempo_gasto (float): O tempo calculado para a batalha (pode ser float('inf')).
+                   cavaleiros_mortos_nomes (list): Lista de nomes dos cavaleiros que morreram (energia <= 0) nesta batalha.
+                   Retorna (float('inf'), []) se nenhum cavaleiro válido puder lutar.
+        """
+        soma_poder_cosmico = 0.0
+        participantes_validos = []
+        cavaleiros_mortos_nomes = []
+
+        print(f"/n--- Simulando Batalha (Dificuldade: {dificuldade_casa}) ---")
+        print(f"Equipe Selecionada: {equipe_nomes}")
+
+        # Verifica energia e calcula soma de poder dos participantes válidos
+        for nome_cavaleiro in equipe_nomes:
+            cavaleiro_encontrado = None
+            for cb in self.cavaleiros_bronze:
+                if cb.nome == nome_cavaleiro:
+                    cavaleiro_encontrado = cb
+                    break
+
+            if cavaleiro_encontrado:
+                if cavaleiro_encontrado.energia > 0:
+                    soma_poder_cosmico += cavaleiro_encontrado.poder_cosmico
+                    participantes_validos.append(cavaleiro_encontrado)
+                    print(f"  - {nome_cavaleiro}: Participando (Energia: {cavaleiro_encontrado.energia}, Poder: {cavaleiro_encontrado.poder_cosmico})")
+                else:
+                    print(f"  - {nome_cavaleiro}: Não pode participar (Energia: {cavaleiro_encontrado.energia} <= 0)")
+            else:
+                print(f"  - Aviso: Cavaleiro '{nome_cavaleiro}' não encontrado na lista.")
+
+        # Calcula o tempo
+        if not participantes_validos or soma_poder_cosmico <= 0:
+            print("Resultado: Nenhum participante válido ou poder total zero. Batalha impossível/infinita.")
+            return float('inf'), [] # Tempo infinito se ninguém puder lutar
+
+        tempo_gasto = dificuldade_casa / soma_poder_cosmico
+        print(f"Poder Cósmico Total da Equipe: {soma_poder_cosmico:.2f}")
+        print(f"Tempo Gasto Calculado: {tempo_gasto:.2f} minutos")
+
+        # Deduz energia e verifica mortes
+        for participante in participantes_validos:
+            participante.energia -= 1
+            print(f"  - {participante.nome}: Energia restante = {participante.energia}")
+            if participante.energia <= 0:
+                print(f"  >>> {participante.nome} gastou toda a energia e não pode mais lutar! <<<")
+                cavaleiros_mortos_nomes.append(participante.nome)
+
+        print("----------------------------------------------")
+        return tempo_gasto, cavaleiros_mortos_nomes
+
+    def get_energia_cavaleiros(self):
+        """Retorna um dicionário com a energia atual de cada cavaleiro de bronze."""
+        return {cb.nome: cb.energia for cb in self.cavaleiros_bronze}
+
+    def reset_energia_cavaleiros(self, energia_inicial=5):
+        """Reseta a energia de todos os cavaleiros de bronze para o valor inicial."""
+        print(f"/n--- Resetando Energia para {energia_inicial} ---")
+        for cb in self.cavaleiros_bronze:
+            cb.energia = energia_inicial
+        print("Energia resetada.")
+
+
+
+# --- Classe Player (Reutilizada para todos os cavaleiros) ---
+class Player(pygame.sprite.Sprite):
+    def __init__(self, x_mapa, y_mapa, sprite_sheet_path, nome="?", poder=0.0, dificuldade=0):
         super().__init__()
         self.nome = nome
-        self.dificuldade = dificuldade # Mantém a dificuldade para Cavaleiros de Ouro
+        self.poder_cosmico = poder
+        self.dificuldade = dificuldade
         self.sprites = {'down': [], 'left': [], 'right': [], 'up': []}
-        self.direcao = 'down' # Direção inicial padrão
+        self.direcao = 'down' # Padrão para baixo
         self.indice_frame = 0
 
-        # Fallback inicial
-        self.image = pygame.Surface((TAMANHO_BLOCO, TAMANHO_BLOCO))
-        self.image.fill(BRANCO)
-        pygame.draw.circle(self.image, (255, 215, 0), (TAMANHO_BLOCO // 2, TAMANHO_BLOCO // 2), TAMANHO_BLOCO // 2 - 2) # Círculo dourado fallback
-        self.rect = self.image.get_rect(topleft=(x_mapa * TAMANHO_BLOCO, y_mapa * TAMANHO_BLOCO))
+        # Define o rect inicial ANTES de carregar sprites
+        self.rect = pygame.Rect(x_mapa * TAMANHO_BLOCO, y_mapa * TAMANHO_BLOCO, TAMANHO_BLOCO, TAMANHO_BLOCO)
+        # Cria uma imagem fallback inicial que será substituída se o load funcionar
+        self.image = pygame.Surface(self.rect.size, pygame.SRCALPHA)
+        self.image.fill((200, 200, 200, 100)) # Fallback padrão
 
-        # Carrega os sprites da sheet (ou imagem única se for o caso)
-        self._load_sprites(sprite_path)
-
-        # Define imagem inicial após carregar
-        if self.sprites[self.direcao]:
-            self.image = self.sprites[self.direcao][self.indice_frame]
-            # Reajusta rect para o tamanho real do sprite carregado/redimensionado
-            self.rect = self.image.get_rect(topleft=(x_mapa * TAMANHO_BLOCO, y_mapa * TAMANHO_BLOCO))
-
-        # Controle de Animação
-        self.tempo_ultima_animacao = pygame.time.get_ticks()
-        # Delay pode ser diferente para os de Ouro, se desejado
-        self.delay_animacao = 180 # Milissegundos entre frames
-
-    def _load_sprites(self, sprite_path):
-        # Similar ao Player._load_sprites, adaptado para GoldSaint
-        if not os.path.exists(sprite_path):
-             print(f"Erro: Arquivo de sprite para {self.nome} não encontrado em '{sprite_path}'")
-             fallback_sprite = self.image
-             for direction in self.sprites.keys():
-                 self.sprites[direction] = [fallback_sprite] * 4
-             return
-
-        try:
-            sheet = pygame.image.load(sprite_path).convert_alpha()
-        except pygame.error as e:
-            print(f"Erro ao carregar a imagem da sprite sheet para {self.nome}: {e}")
-            fallback_sprite = self.image
-            for direction in self.sprites.keys():
-                 self.sprites[direction] = [fallback_sprite] * 4
-            return
-
-        sheet_width, sheet_height = sheet.get_size()
-
-        # Tenta detectar se é uma sprite sheet 4x4 ou uma imagem única
-        # Isso é uma heurística, pode precisar de ajuste
-        if sheet_width >= TAMANHO_BLOCO * 4 and sheet_height >= TAMANHO_BLOCO * 4:
-            # Assume formato 4x4 (como os de bronze)
-            sprite_width = sheet_width // 4
-            sprite_height = sheet_height // 4
-            direcoes_na_sheet = ['down', 'left', 'right', 'up']
-
-            for i, direcao in enumerate(direcoes_na_sheet):
-                if direcao in self.sprites:
-                    for j in range(4):
-                        rect = pygame.Rect(j * sprite_width, i * sprite_height, sprite_width, sprite_height)
-                        sprite = pygame.Surface(rect.size, pygame.SRCALPHA)
-                        sprite.blit(sheet, (0, 0), rect)
-                        sprite = pygame.transform.scale(sprite, (TAMANHO_BLOCO, TAMANHO_BLOCO))
-                        self.sprites[direcao].append(sprite)
-                else:
-                     print(f"Aviso: Direção '{direcao}' inesperada para {self.nome}.")
-
-            # Verifica se carregou algo, senão usa fallback
-            if not self.sprites['down']:
-                 print(f"Aviso: Falha ao extrair sprites da sheet para {self.nome}. Usando fallback.")
-                 fallback_sprite = self.image
-                 for direction in self.sprites.keys():
-                      self.sprites[direction] = [fallback_sprite] * 4
-
-        else:
-            # Assume imagem única, usa para todas as direções/frames
-            print(f"Aviso: Sprite para {self.nome} parece ser imagem única. Animação não ocorrerá.")
-            sprite = pygame.transform.scale(sheet, (TAMANHO_BLOCO, TAMANHO_BLOCO))
-            for direcao in self.sprites.keys():
-                self.sprites[direcao] = [sprite] * 4 # Repete a mesma imagem
-
-    def update(self):
-        # Similar ao Player.update
-        agora = pygame.time.get_ticks()
-        # Só anima se houver mais de um frame na direção atual
-        if len(self.sprites[self.direcao]) > 1 and agora - self.tempo_ultima_animacao > self.delay_animacao:
-            self.tempo_ultima_animacao = agora
-            self.indice_frame = (self.indice_frame + 1) % len(self.sprites[self.direcao])
-            self.image = self.sprites[self.direcao][self.indice_frame]
-
-class Player(pygame.sprite.Sprite):
-    def __init__(self, x_mapa, y_mapa, sprite_sheet_path, nome, poder): # Adicionado nome e poder
-        super().__init__()
-        self.nome = nome # Adicionado
-        self.poder_cosmico = poder # Adicionado
-        self.sprites = {'down': [], 'left': [], 'right': [], 'up': []}
-
-        # Define a direção e o frame ANTES de carregar os sprites
-        self.direcao = 'down'
-        self.indice_frame = 0
-
-        # Inicializa image e rect com um valor padrão antes de carregar
-        self.image = pygame.Surface((TAMANHO_BLOCO, TAMANHO_BLOCO))
-        self.image.fill(BRANCO) # Cor de fallback inicial
-        self.rect = self.image.get_rect(topleft=(x_mapa * TAMANHO_BLOCO, y_mapa * TAMANHO_BLOCO))
-
-        # Agora carrega os sprites
         self._load_sprites(sprite_sheet_path)
 
-        # Define a imagem inicial correta APÓS carregar os sprites (se bem-sucedido)
-        if self.sprites[self.direcao]: # Verifica se há sprites para a direção inicial
+        # Tenta definir a imagem inicial correta APÓS _load_sprites
+        if self.sprites.get(self.direcao): # Usa .get() para segurança
             self.image = self.sprites[self.direcao][self.indice_frame]
-            # Reajusta o rect caso o tamanho do sprite carregado seja diferente (embora redimensionemos)
-            # Ajuste para posicionamento inicial ligeiramente diferente
-            self.rect = self.image.get_rect(topleft=(x_mapa * TAMANHO_BLOCO, y_mapa * TAMANHO_BLOCO))
-        # else: mantém a imagem de fallback definida anteriormente
+            # Atualiza o rect para o tamanho real do frame carregado
+            frame_rect = self.image.get_rect()
+            # Mantém o topleft na posição do mapa, mas usa o tamanho do sprite
+            self.rect = frame_rect.copy()
+            self.rect.topleft = (x_mapa * TAMANHO_BLOCO, y_mapa * TAMANHO_BLOCO)
+        # else: self.image continua sendo o fallback criado acima
+
 
         self.energia = 5
-
-        # Controle de Animação
         self.tempo_ultima_animacao = pygame.time.get_ticks()
-        self.delay_animacao = 150 # Milissegundos entre frames (ajuste para velocidade desejada)
+        self.delay_animacao = 150
 
     def _load_sprites(self, sprite_sheet_path):
-        """Carrega os sprites da sprite sheet."""
+        # ... (código _load_sprites da resposta anterior, com verificações) ...
         if not os.path.exists(sprite_sheet_path):
-             print(f"Erro: Arquivo de sprite para {self.nome} não encontrado em '{sprite_sheet_path}'") # Nome adicionado
-             # A imagem fallback já foi definida no __init__
-             # Adiciona esta imagem fallback a todas as direções para evitar erros posteriores
-             fallback_sprite = self.image
-             for direction in self.sprites.keys():
-                 self.sprites[direction] = [fallback_sprite] * 4
+             print(f"Erro: Arquivo de sprite não encontrado para {self.nome} em '{sprite_sheet_path}'")
+             self._set_fallback_sprites()
              return
-
-        try:
-            sheet = pygame.image.load(sprite_sheet_path).convert_alpha()
+        try: sheet = pygame.image.load(sprite_sheet_path).convert_alpha()
         except pygame.error as e:
-            print(f"Erro ao carregar a imagem da sprite sheet para {self.nome}: {e}") # Nome adicionado
-            # A imagem fallback já foi definida no __init__
-            fallback_sprite = self.image
-            for direction in self.sprites.keys():
-                 self.sprites[direction] = [fallback_sprite] * 4
+            print(f"Erro ao carregar imagem para {self.nome}: {e}")
+            self._set_fallback_sprites()
             return
 
         sheet_width, sheet_height = sheet.get_size()
-        # Assumindo 4 linhas (direções) e 4 colunas (frames)
-        sprite_width = sheet_width // 4
-        sprite_height = sheet_height // 4
+        num_frames_por_linha = 4 ; num_linhas_direcao = 4 # Assumindo 4x4
+        sprite_width = sheet_width // num_frames_por_linha
+        sprite_height = sheet_height // num_linhas_direcao
 
-        # Ordem das direções na sua sprite sheet (ajuste se necessário)
-        # Ex: ['down', 'left', 'right', 'up'] se a 1ª linha é para baixo, 2ª esquerda, etc.
-        direcoes_na_sheet = ['down', 'left', 'right', 'up'] # Ajuste conforme a sua imagem
+        if sprite_width <= 0 or sprite_height <= 0:
+            print(f"Erro: Dimensões inválidas da sheet para {self.nome} ({sheet_width}x{sheet_height}).")
+            self._set_fallback_sprites()
+            return
 
+        direcoes_na_sheet = ['down', 'left', 'right', 'up']
         for i, direcao in enumerate(direcoes_na_sheet):
-            # Verifica se a direção existe no dicionário antes de adicionar
-            if direcao in self.sprites:
-                for j in range(4): # 4 frames por direção
-                    rect = pygame.Rect(j * sprite_width, i * sprite_height, sprite_width, sprite_height)
-                    sprite = pygame.Surface(rect.size, pygame.SRCALPHA)
-                    sprite.blit(sheet, (0, 0), rect)
+            self.sprites[direcao] = [] # Limpa a lista para esta direção
+            for j in range(num_frames_por_linha):
+                rect = pygame.Rect(j * sprite_width, i * sprite_height, sprite_width, sprite_height)
+                if sheet.get_rect().contains(rect):
+                    try:
+                        sprite = sheet.subsurface(rect)
+                        sprite = pygame.transform.scale(sprite, (TAMANHO_BLOCO, TAMANHO_BLOCO))
+                        self.sprites[direcao].append(sprite)
+                    except ValueError as e: # Erro no subsurface
+                         print(f"Erro no subsurface para {self.nome} frame ({j},{i}): {e}")
+                         self.sprites[direcao].append(self._create_fallback_sprite((255,165,0,150))) # Laranja fallback
+                else:
+                    print(f"Aviso: Frame ({j},{i}) fora dos limites da sheet para {self.nome}.")
+                    self.sprites[direcao].append(self._create_fallback_sprite((255,0,0,150))) # Vermelho fallback
 
-                    # Redimensiona o sprite para o tamanho do bloco do mapa
-                    sprite = pygame.transform.scale(sprite, (TAMANHO_BLOCO, TAMANHO_BLOCO))
-                    self.sprites[direcao].append(sprite)
-            else:
-                print(f"Aviso: Direção '{direcao}' inesperada encontrada na sheet ou erro de configuração.")
+        # Garante que mesmo após o loop, haja sprites
+        for direcao in direcoes_na_sheet:
+             if not self.sprites.get(direcao): # Se a lista não existe ou está vazia
+                  print(f"Aviso crítico: Falha completa ao carregar direção '{direcao}' para {self.nome}.")
+                  self.sprites[direcao] = [self._create_fallback_sprite()] * num_frames_por_linha
 
 
-        # Garante que mesmo que o carregamento falhe parcialmente, haja sprites
-        # A definição da imagem inicial agora é feita no __init__ APÓS esta função
-        if not self.sprites['down']: # Verifica se a lista de uma direção chave está vazia
-             print(f"Aviso: Falha ao extrair sprites para {self.nome}. Usando fallback.") # Nome adicionado
-             fallback_sprite = self.image # Usa a imagem fallback já criada
-             for direction in self.sprites.keys():
-                 if not self.sprites[direction]:
-                      self.sprites[direction] = [fallback_sprite] * 4
-        # REMOVIDO: A lógica de definir self.image aqui foi movida para __init__
+    def _create_fallback_sprite(self, color=(200, 200, 200, 150)):
+        """Cria um sprite de fallback visual."""
+        sprite = pygame.Surface((TAMANHO_BLOCO, TAMANHO_BLOCO), pygame.SRCALPHA)
+        sprite.fill(color)
+        pygame.draw.rect(sprite, PRETO, sprite.get_rect(), 1) # Borda
+        return sprite
+
+    def _set_fallback_sprites(self):
+        """Define sprites de fallback para todas as direções."""
+        fallback = self._create_fallback_sprite()
+        for direction in self.sprites.keys():
+            self.sprites[direction] = [fallback] * 4 # Assume 4 frames
+        # Define a imagem atual também, caso a direção inicial falhe
+        if self.direcao in self.sprites:
+            self.image = self.sprites[self.direcao][0]
+        else: # Se até a direção inicial for inválida (improvável)
+            self.image = fallback
+
 
     def update(self):
-        """Atualiza a animação do jogador baseado no tempo."""
+        # ... (código update sem alterações) ...
+        if not self.sprites.get(self.direcao) or len(self.sprites[self.direcao]) <= 1:
+            if self.sprites.get(self.direcao): self.image = self.sprites[self.direcao][0]
+            return
+
         agora = pygame.time.get_ticks()
         if agora - self.tempo_ultima_animacao > self.delay_animacao:
             self.tempo_ultima_animacao = agora
-            self.indice_frame = (self.indice_frame + 1) % len(self.sprites[self.direcao])
-            self.image = self.sprites[self.direcao][self.indice_frame]
+            # Acessa com get para segurança, embora a verificação acima deva cobrir
+            sprite_list = self.sprites.get(self.direcao, [])
+            if sprite_list: # Procede somente se a lista existir
+                 self.indice_frame = (self.indice_frame + 1) % len(sprite_list)
+                 self.image = sprite_list[self.indice_frame]
+            # else: mantém a imagem atual (que seria fallback ou o último frame válido)
+
 
     def move(self, dx, dy, mapa_obj):
-        """Move o jogador, atualiza a direção e a imagem imediatamente."""
-        nova_pos_x = self.rect.x + dx * TAMANHO_BLOCO
-        nova_pos_y = self.rect.y + dy * TAMANHO_BLOCO
-
-        nova_direcao = self.direcao # Mantém a direção atual se não houver movimento
-        if dx > 0: nova_direcao = 'right'
-        elif dx < 0: nova_direcao = 'left'
-        elif dy > 0: nova_direcao = 'down'
-        elif dy < 0: nova_direcao = 'up'
-
-        # Atualiza a direção e reseta o frame se a direção mudou
-        if nova_direcao != self.direcao:
-            self.direcao = nova_direcao
-            self.indice_frame = 0 # Começa a animação da nova direção do início
-            # Garante que a lista de sprites para a nova direção não está vazia
-            if self.sprites[self.direcao]:
-                 self.image = self.sprites[self.direcao][self.indice_frame]
-            # else: mantém a imagem anterior se a nova direção não tiver sprites (improvável com o fallback)
-
-
-        mapa_x = nova_pos_x // TAMANHO_BLOCO
-        mapa_y = nova_pos_y // TAMANHO_BLOCO
-
-        if 0 <= mapa_y < mapa_obj.altura_mapa and 0 <= mapa_x < mapa_obj.largura_mapa:
-             self.rect.x = nova_pos_x
-             self.rect.y = nova_pos_y
+         # ... (movimento manual desativado) ...
+         pass
 
     def draw(self, surface):
-        """Desenha o jogador na superfície."""
+        # ... (código draw sem alterações) ...
         surface.blit(self.image, self.rect.topleft)
 
 
+# --- Classe MapaAereo (Modificada) ---
 class MapaAereo:
-    def __init__(self, nome_arquivo):
-        self.nome_arquivo = nome_arquivo
+    def __init__(self, nome_arquivo_mapa, cav_bronze_data, cav_ouro_data, tremy_data): # Adicionado tremy_data
+        self.nome_arquivo = nome_arquivo_mapa
         self.mapa = self._carregar_mapa()
-        if not self.mapa:
-            sys.exit("Erro: Mapa não pôde ser carregado.")
+        if not self.mapa: sys.exit("Erro: Mapa não pôde ser carregado.")
 
         self.largura_mapa = len(self.mapa[0])
         self.altura_mapa = len(self.mapa)
@@ -278,208 +280,204 @@ class MapaAereo:
 
         pygame.init()
         self.tela = pygame.display.set_mode((self.largura_tela, self.altura_tela))
-        pygame.display.set_caption('Mapa do Santuário - Visão Aérea')
+        pygame.display.set_caption('Santuário - IA')
+        self.clock = pygame.time.Clock()
 
-        # self.jogador = None # Removido
-        # self.player_sprite_group = pygame.sprite.GroupSingle() # Removido
+        # Grupos de Sprites
+        self.cavaleiros_bronze = []
+        self.grupo_cavaleiros_bronze = pygame.sprite.Group()
+        self.cavaleiros_ouro = []
+        self.grupo_cavaleiros_ouro = pygame.sprite.Group()
+        self.cavaleiro_prata = None # Instância única
+        self.grupo_cavaleiro_prata = pygame.sprite.GroupSingle() # Grupo para Tremy
 
-        self.cavaleiros = []
-        self.cavaleiros_sprites = pygame.sprite.Group()
-        self._inicializar_cavaleiros()
-
-        # >>> GARANTA QUE ESTAS LINHAS EXISTEM <<<
-        self.gold_saints = []
-        self.gold_saints_sprites = pygame.sprite.Group()
-        self._inicializar_gold_saints() # Chama a função para criar os Cavaleiros de Ouro
-
+        # Inicializações
+        self._inicializar_cavaleiros_bronze(cav_bronze_data)
+        self._inicializar_cavaleiros_ouro(cav_ouro_data)
+        self._inicializar_cavaleiro_prata(tremy_data) # Inicializa Tremy
+        if self.cavaleiros_bronze: # Só cria se houver cavaleiros de bronze
+             self.gerenciador_lutas = Luta(self.cavaleiros_bronze)
+             print("Gerenciador de Lutas inicializado.")
+        else:
+             self.gerenciador_lutas = None
+             print("Aviso: Gerenciador de Lutas não criado (nenhum cavaleiro de bronze).")
     def _carregar_mapa(self):
-        """Carrega o mapa do arquivo CSV."""
-        mapa_carregado = []
-        try:
-            with open(self.nome_arquivo, 'r', newline='') as arquivo:
-                leitor = csv.reader(arquivo)
-                primeira_linha_len = -1 # Para verificar consistência
-                for i, linha in enumerate(leitor):
-                    # Filtra strings vazias e converte para int
-                    linha_int = []
-                    for valor in linha:
-                        valor_strip = valor.strip()
-                        if valor_strip: # Se não for vazio após remover espaços
-                            try:
-                                linha_int.append(int(valor_strip))
-                            except ValueError:
-                                print(f"Erro: Valor não numérico '{valor}' encontrado na linha {i+1} do CSV.")
-                                return None # Retorna None em caso de erro de valor
-                        # else: ignora célula vazia
-
-                    if not linha_int and any(v.strip() for v in linha):
-                        # Linha tinha conteúdo não numérico ou apenas espaços/vírgulas extras
-                        print(f"Aviso: Linha {i+1} contém dados inválidos ou está mal formatada.")
-                        # Decide se quer parar ou continuar (aqui vamos pular a linha)
-                        continue # Pula para a próxima linha
-
-                    if linha_int: # Adiciona a linha apenas se não estiver vazia após a filtragem/conversão
-                        if primeira_linha_len == -1:
-                            primeira_linha_len = len(linha_int)
-                        elif len(linha_int) != primeira_linha_len:
-                            print(f"Erro: Linha {i+1} tem comprimento {len(linha_int)}, esperado {primeira_linha_len}.")
-                            return None # Retorna None se as linhas tiverem comprimentos diferentes
-                        mapa_carregado.append(linha_int)
-
-            if not mapa_carregado:
-                print("Erro: O mapa carregado está vazio ou o CSV não contém dados válidos.")
-                return None
-
-            return mapa_carregado
-        except FileNotFoundError:
-            print(f"Erro: Arquivo '{self.nome_arquivo}' não encontrado.")
-            return None
-        # Removido o catch genérico de ValueError aqui, pois tratamos dentro do loop
-        except Exception as e:
-            print(f"Erro inesperado ao carregar o mapa: {e}")
-            return None
+        # ... (código _carregar_mapa sem alterações) ...
+         mapa_carregado = []
+         try:
+             with open(self.nome_arquivo, 'r', newline='') as arquivo:
+                 leitor = csv.reader(arquivo)
+                 primeira_linha_len = -1 ; problemas_linha = False
+                 for i, linha in enumerate(leitor):
+                     linha_int = [] ; linha_contem_algo = any(v.strip() for v in linha)
+                     if not linha_contem_algo: continue # Pula linhas totalmente vazias
+                     for valor in linha:
+                         valor_strip = valor.strip()
+                         if valor_strip:
+                             try: linha_int.append(int(valor_strip))
+                             except ValueError:
+                                 print(f"Erro: Valor não numérico '{valor}' linha {i+1}.")
+                                 problemas_linha = True ; break # Para de processar esta linha
+                     if problemas_linha: continue # Pula para a próxima linha do CSV
+                     if not linha_int and linha_contem_algo:
+                         print(f"Aviso: Linha {i+1} inválida (não numérica ou mal formatada).")
+                         continue
+                     if linha_int:
+                         if primeira_linha_len == -1: primeira_linha_len = len(linha_int)
+                         elif len(linha_int) != primeira_linha_len:
+                             print(f"Erro: Linha {i+1} comprimento {len(linha_int)}, esperado {primeira_linha_len}.")
+                             return None
+                         mapa_carregado.append(linha_int)
+             if not mapa_carregado: print("Erro: Mapa vazio ou inválido."); return None
+             print(f"Mapa '{self.nome_arquivo}' carregado: {len(mapa_carregado)} linhas x {primeira_linha_len} colunas.")
+             return mapa_carregado
+         except FileNotFoundError: print(f"Erro: Arquivo '{self.nome_arquivo}' não encontrado."); return None
+         except Exception as e: print(f"Erro inesperado ao carregar mapa: {e}"); return None
 
     def _obter_cor(self, valor):
-        """Retorna a cor correspondente ao valor da célula."""
-        if valor == 14:
-            return COR_PLANO
-        elif valor == 15:
-            return COR_ROCHOSO
-        elif valor == 16:
-            return COR_MONTANHOSO
-        elif valor == 1: # Ponto inicial original (verde)
-             # Se você mudou o inicial para 0 (vermelho), ajuste aqui e em _encontrar_posicao_inicial
-             return COR_INICIO
-        elif valor == 0: # Ponto final original (vermelho)
-             # Se você mudou o final para 1 (verde), ajuste aqui
-             return COR_FIM
-        elif 2 <= valor <= 13:
-            return COR_CASAS
-        else:
-            # print(f"Aviso: Valor não mapeado encontrado no mapa: {valor}") # Comentado para não poluir
-            return BRANCO # Cor padrão para valores desconhecidos
+        # ... (código _obter_cor sem alterações) ...
+         # !!! CONFIRME OS VALORES PARA INICIO/FIM !!!
+         if valor == 14: return COR_PLANO
+         elif valor == 15: return COR_ROCHOSO
+         elif valor == 16: return COR_MONTANHOSO
+         elif valor == 1: return COR_INICIO # Assumindo 1 = Início (Verde)
+         elif valor == 0: return COR_FIM    # Assumindo 0 = Fim (Vermelho)
+         elif 2 <= valor <= 13: return COR_CASAS
+         else: return BRANCO
 
-    def _encontrar_posicao_inicial(self):
-        """Encontra as coordenadas (x, y) do ponto inicial no mapa (valor 1)."""
+    def _encontrar_posicao_valor(self, valor_procurado):
+        # ... (código _encontrar_posicao_valor sem alterações) ...
         for y, linha in enumerate(self.mapa):
             for x, valor in enumerate(linha):
-                if valor == CASA_INICIO_PLAYER: 
+                if valor == valor_procurado:
                     return x, y
-        print("Aviso: Posição inicial (valor 1) não encontrada no mapa. Usando (0,0).")
-        return 0, 0
+        return None
 
-    def _inicializar_cavaleiros(self): # Renomeado e modificado
-        """Cria as instâncias dos cavaleiros na posição inicial."""
-        start_x, start_y = self._encontrar_posicao_inicial()
-        for i, data in enumerate(CAVALEIROS_DATA):
-            # Desloca ligeiramente cada cavaleiro para não ficarem sobrepostos
-            # Ajuste o deslocamento (i * TAMANHO_BLOCO / 5) conforme necessário
-            offset_x = i * (TAMANHO_BLOCO // len(CAVALEIROS_DATA)) # Espalha dentro do bloco inicial
-            
-            # Verifica se o sprite sheet existe antes de criar o Player
-            if not os.path.exists(data["sprite_sheet"]):
-                 print(f"Erro Crítico: Sprite sheet para {data['nome']} não encontrada em {data['sprite_sheet']}")
-                 print("Verifique o caminho e o nome do arquivo.")
-                 # Decide se quer continuar sem este cavaleiro ou parar
-                 # sys.exit(1) # Descomente para parar se um sprite faltar
-                 continue # Pula este cavaleiro se o sprite não for encontrado
-
-            cavaleiro = Player(start_x, start_y, data["sprite_sheet"], data["nome"], data["poder"])
-            # Ajusta a posição inicial exata após a criação do rect no Player.__init__
-            cavaleiro.rect.x += offset_x 
-            
-            self.cavaleiros.append(cavaleiro)
-            self.cavaleiros_sprites.add(cavaleiro)
-
-
-    def _inicializar_gold_saints(self):
-        """Encontra as posições das casas e inicializa os Cavaleiros de Ouro."""
-        posicoes_casas = {}
+    def _encontrar_posicoes_casas(self):
+        # ... (código _encontrar_posicoes_casas sem alterações) ...
+        posicoes = {}
         for y, linha in enumerate(self.mapa):
             for x, valor in enumerate(linha):
-                # Verifica se o valor corresponde a uma casa (2 a 13)
                 if 2 <= valor <= 13:
-                    if valor not in posicoes_casas:
-                         posicoes_casas[valor] = (x, y)
+                    if valor not in posicoes: posicoes[valor] = (x, y)
+        return posicoes
 
-        for data in GOLD_SAINTS_DATA:
-            map_value = data["map_value"]
-            if map_value in posicoes_casas:
-                start_x, start_y = posicoes_casas[map_value]
-                if not os.path.exists(data["sprite_sheet"]):
-                    print(f"Aviso: Sprite sheet para {data['nome']} não encontrada em {data['sprite_sheet']}. Usando fallback.")
+    def _inicializar_cavaleiros_bronze(self, cavaleiros_data):
+        # --- CONFIRME O VALOR DO PONTO INICIAL (Ex: 1 para COR_INICIO Verde) ---
+       # <<< AJUSTE AQUI SE NECESSÁRIO
+        # --------------------------------------------------------------------
+        pos_inicial = self._encontrar_posicao_valor(VALOR_PONTO_INICIAL)
+        if pos_inicial is None:
+            print(f"Erro Crítico: Posição inicial (valor {VALOR_PONTO_INICIAL}) não encontrada! Cav. Bronze não criados.")
+            return
+        start_x, start_y = pos_inicial
+        print(f"Inicializando Cavaleiros de Bronze em (col={start_x}, lin={start_y})")
 
-                saint = GoldSaint(start_x, start_y, data["sprite_sheet"], data["nome"], data["dificuldade"])
-                self.gold_saints.append(saint)
-                self.gold_saints_sprites.add(saint) # <<< ESSENCIAL: Adiciona ao grupo
-            else:
-                print(f"Aviso: Posição para a casa {data['nome']} (valor {map_value}) não encontrada no mapa.")
+        for info in cavaleiros_data:
+            # A verificação de existência do path é feita dentro de Player agora
+            cavaleiro = Player(start_x, start_y, info['sprite_path'], info['nome'], info['poder'])
+            self.cavaleiros_bronze.append(cavaleiro)
+            self.grupo_cavaleiros_bronze.add(cavaleiro)
+            # Não precisa imprimir sucesso aqui, Player já imprime
+        if not self.cavaleiros_bronze: print("Aviso: Nenhum Cavaleiro de Bronze inicializado.")
+
+
+    def _inicializar_cavaleiros_ouro(self, cavaleiros_data):
+        # ... (código _inicializar_cavaleiros_ouro sem alterações) ...
+        posicoes_casas = self._encontrar_posicoes_casas()
+        if not posicoes_casas: print("Aviso: Nenhuma posição de Casa (2-13) encontrada."); return
+
+        print("Inicializando Cavaleiros de Ouro...")
+        for info in cavaleiros_data:
+            casa_num = info['casa']
+            if casa_num in posicoes_casas:
+                pos_x, pos_y = posicoes_casas[casa_num]
+                cavaleiro = Player(pos_x, pos_y, info['sprite_path'], info['nome'], 0.0, info['dificuldade'])
+                self.cavaleiros_ouro.append(cavaleiro)
+                self.grupo_cavaleiros_ouro.add(cavaleiro)
+            else: print(f"Aviso: Posição Casa {casa_num} ({info['nome']}) não encontrada.")
+        if not self.cavaleiros_ouro: print("Aviso: Nenhum Cavaleiro de Ouro inicializado.")
+
+    # Novo método para inicializar Tremy
+    def _inicializar_cavaleiro_prata(self, tremy_data):
+        """Cria a instância do cavaleiro de prata na posição inicial."""
+        # --- CONFIRME O VALOR DO PONTO INICIAL (Mesmo dos Bronze) ---
+        VALOR_PONTO_INICIAL = 1 # <<< AJUSTE AQUI SE NECESSÁRIO
+        # -----------------------------------------------------------
+        pos_inicial = self._encontrar_posicao_valor(VALOR_PONTO_INICIAL)
+        if pos_inicial is None:
+            print("Erro Crítico: Posição inicial não encontrada! Tremy não criado.")
+            return
+        start_x, start_y = pos_inicial
+        print(f"Inicializando Cavaleiro de Prata em (col={start_x}, lin={start_y})")
+
+        # Cria a instância de Tremy (reutilizando Player)
+        self.cavaleiro_prata = Player(start_x, start_y, tremy_data['sprite_path'], tremy_data['nome'])
+        # Adiciona ao grupo single (GroupSingle só pode ter um sprite)
+        self.grupo_cavaleiro_prata.add(self.cavaleiro_prata)
 
 
     def desenhar(self):
-        """Desenha o mapa, os cavaleiros de bronze e os de ouro na tela."""
-        # Desenha o mapa
+        """Desenha o mapa e todos os cavaleiros na tela."""
+        self.tela.fill(PRETO)
+        # Mapa
         for i, linha in enumerate(self.mapa):
             for j, valor in enumerate(linha):
-                x = j * TAMANHO_BLOCO
-                y = i * TAMANHO_BLOCO
+                x = j * TAMANHO_BLOCO; y = i * TAMANHO_BLOCO
                 cor = self._obter_cor(valor)
                 pygame.draw.rect(self.tela, cor, (x, y, TAMANHO_BLOCO, TAMANHO_BLOCO))
                 pygame.draw.rect(self.tela, PRETO, (x, y, TAMANHO_BLOCO, TAMANHO_BLOCO), 1)
 
-        # >>> GARANTA QUE ESTA LINHA EXISTE <<<
-        self.gold_saints_sprites.draw(self.tela) # Desenha os Cavaleiros de Ouro
+        # Cavaleiros (Ordem de desenho importa para sobreposição)
+        self.grupo_cavaleiros_ouro.draw(self.tela)  # Ouro primeiro (mais ao fundo)
+        self.grupo_cavaleiro_prata.draw(self.tela) # Prata
+        self.grupo_cavaleiros_bronze.draw(self.tela) # Bronze por cima de todos
 
-        self.cavaleiros_sprites.draw(self.tela) # Desenha os Cavaleiros de Bronze
 
     def run(self):
         """Executa o loop principal do Pygame."""
         rodando = True
-        clock = pygame.time.Clock()
-
         while rodando:
             for evento in pygame.event.get():
                 if evento.type == pygame.QUIT:
                     rodando = False
-                # REMOVIDO/COMENTADO: Controle pelo teclado
-                # if evento.type == pygame.KEYDOWN:
-                #     dx, dy = 0, 0
-                #     if evento.key == pygame.K_LEFT:
-                #         dx = -1
-                #     elif evento.key == pygame.K_RIGHT:
-                #         dx = 1
-                #     elif evento.key == pygame.K_UP:
-                #         dy = -1
-                #     elif evento.key == pygame.K_DOWN:
-                #         dy = 1
-                #
-                #     # Moveria apenas um jogador se descomentado, precisaria de lógica adicional
-                #     # if dx != 0 or dy != 0:
-                #     #     # Qual cavaleiro mover? Precisa definir a lógica.
-                #     #     # Exemplo: self.cavaleiros[0].move(dx, dy, self)
-                #     #     pass
 
+            # Atualiza todos os grupos de sprites
+            self.grupo_cavaleiros_bronze.update()
+            self.grupo_cavaleiros_ouro.update()
+            self.grupo_cavaleiro_prata.update() # Atualiza Tremy (para animação)
 
-            # Atualiza a animação de TODOS os cavaleiros
-            self.cavaleiros_sprites.update() # Chama o método update de cada sprite no grupo
-
+            # Desenha tudo
             self.desenhar()
+
             pygame.display.flip()
-            clock.tick(30) # Limita a 30 FPS
+            self.clock.tick(30)
 
         pygame.quit()
 
+# --- Ponto de Entrada Principal ---
 def main():
-    # Verifica se o arquivo CSV do mapa existe
-    if not os.path.exists(NOME_ARQUIVO):
-        print(f"Erro Crítico: Arquivo do mapa não encontrado em {NOME_ARQUIVO}")
-        sys.exit(1)
-        
-    # A verificação dos sprites agora é feita em _inicializar_cavaleiros
+    # Verifica arquivos essenciais
+    if not os.path.exists(NOME_ARQUIVO_MAPA): print(f"Erro: Mapa não encontrado {NOME_ARQUIVO_MAPA}"); sys.exit(1)
+    # Verifica se pelo menos um sprite de cada grupo existe (exemplo)
+    if not os.path.exists(CAVALEIROS_BRONZE_INFO[0]['sprite_path']): print(f"Erro: Sprite Seiya não encontrado."); sys.exit(1)
+    if not os.path.exists(CAVALEIROS_OURO_INFO[0]['sprite_path']): print(f"Erro: Sprite Mu não encontrado."); sys.exit(1)
+    if not os.path.exists(TREMY_INFO['sprite_path']): print(f"Erro: Sprite Tremy não encontrado."); sys.exit(1)
 
-    mapa_aereo = MapaAereo(NOME_ARQUIVO) # Não passa mais o sprite_path aqui
-    if mapa_aereo.mapa: # Verifica se o mapa foi carregado com sucesso
+
+    # Cria a instância do MapaAereo, passando todas as informações
+    mapa_aereo = MapaAereo(NOME_ARQUIVO_MAPA,
+                           CAVALEIROS_BRONZE_INFO,
+                           CAVALEIROS_OURO_INFO,
+                           TREMY_INFO) # Passa info do Tremy
+
+    # Roda o jogo
+    if mapa_aereo.mapa and (mapa_aereo.cavaleiros_bronze or mapa_aereo.cavaleiros_ouro or mapa_aereo.cavaleiro_prata):
         mapa_aereo.run()
+    else:
+        print("Falha ao inicializar. Verifique os arquivos e logs.")
+        pygame.quit()
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()

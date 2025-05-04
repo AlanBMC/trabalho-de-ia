@@ -439,15 +439,86 @@ class MapaAereo:
 
 # --- Classe A* Simplificada (Fase 1: Caminho Físico) ---
 class BuscaAEstrelaCaminho:
+   # Dentro da classe BuscaAEstrelaCaminho
+
     def __init__(self, mapa_obj):
         self.mapa_obj = mapa_obj
-        self.waypoints = []
-        if mapa_obj.posicao_inicial: self.waypoints.append(mapa_obj.posicao_inicial)
-        self.waypoints.extend([p for p in mapa_obj.posicoes_casas_lista if p is not None])
-        if mapa_obj.posicao_final: self.waypoints.append(mapa_obj.posicao_final)
-        if len(self.waypoints) < NUM_CASAS + 2:
-             print(f"Erro A* Caminho: Waypoints insuficientes ({len(self.waypoints)}). Esperado {NUM_CASAS + 2}.")
-             self.waypoints = None
+        self.waypoints = [] # Começa a lista vazia
+        tremy_pos_obrigatoria = (22, 38) # Define a coordenada de Tremy aqui
+
+        # --- CONSTRUÇÃO CORRETA E SEQUENCIAL DA LISTA ---
+
+        # 1. Adiciona Ponto Inicial (se válido)
+        if mapa_obj.posicao_inicial:
+            self.waypoints.append(mapa_obj.posicao_inicial)
+            print(f"DEBUG A* Path: Waypoint 0 (Início): {mapa_obj.posicao_inicial}")
+        else:
+            print("ERRO FATAL: Posição inicial não encontrada.")
+            self.waypoints = None # Invalida a lista
+            return # Sai do __init__
+
+        # 2. Adiciona Posição de Tremy (se válida e diferente do último)
+        #if 0 <= tremy_pos_obrigatoria[0] < mapa_obj.largura_mapa and \
+           #0 <= tremy_pos_obrigatoria[1] < mapa_obj.altura_mapa:
+            # Adiciona APENAS se a lista não estiver vazia E for diferente do último ponto
+            #if self.waypoints and self.waypoints[-1] != tremy_pos_obrigatoria:
+            #     self.waypoints.append(tremy_pos_obrigatoria)
+           #      print(f"DEBUG A* Path: Waypoint Tremy adicionado: {tremy_pos_obrigatoria}")
+           # elif not self.waypoints: # Se for o primeiro ponto (caso raro)
+          #       self.waypoints.append(tremy_pos_obrigatoria)
+          #       print(f"DEBUG A* Path: Waypoint Tremy adicionado (como primeiro?): {tremy_pos_obrigatoria}")
+            # else: Posição de Tremy é igual ao último ponto, não adiciona duplicado
+        #else:
+          #   print(f"AVISO: Posição Tremy {tremy_pos_obrigatoria} inválida. Não adicionada.")
+
+        # 3. Adiciona Posições das Casas (válidas e diferentes do último)
+        casas_validas = [p for p in mapa_obj.posicoes_casas_lista if p is not None]
+        for i, casa_pos in enumerate(casas_validas):
+            # Adiciona APENAS se a lista não estiver vazia E for diferente do último ponto
+            if self.waypoints and self.waypoints[-1] != casa_pos:
+                 self.waypoints.append(casa_pos)
+            elif not self.waypoints: # Se for o primeiro ponto
+                 self.waypoints.append(casa_pos)
+            # else: Posição da casa é igual ao último ponto, não adiciona duplicado
+        print(f"DEBUG A* Path: Waypoints Casas adicionados ({len(casas_validas)} válidas)")
+
+
+        # 4. Adiciona Ponto Final (se válido e diferente do último)
+        if mapa_obj.posicao_final:
+            # Verifica se a lista de waypoints já existe e não está vazia
+            if self.waypoints:
+                # Adiciona se for diferente do último OU se for o mesmo (garante que esteja lá)
+                # A reconstrução do caminho lidará com coordenadas duplicadas se necessário.
+                if self.waypoints[-1] != mapa_obj.posicao_final:
+                    self.waypoints.append(mapa_obj.posicao_final)
+                    print(f"DEBUG A* Path: Waypoint Final adicionado: {mapa_obj.posicao_final}")
+                else:
+                    # Mesmo se for igual, garantimos que o último elemento é o final.
+                    # Isso pode acontecer se a última casa for no mesmo local do objetivo.
+                    self.waypoints[-1] = mapa_obj.posicao_final # Garante que é a referência correta
+                    print(f"DEBUG A* Path: Waypoint Final ({mapa_obj.posicao_final}) já era o último.")
+
+            else: # Se a lista estava vazia (caso extremo)
+                 self.waypoints.append(mapa_obj.posicao_final)
+                 print(f"DEBUG A* Path: Waypoint Final adicionado (como primeiro?).")
+        else:
+            print("ERRO FATAL: Posição final não encontrada.")
+            self.waypoints = None; return
+        # --- FIM DA CONSTRUÇÃO ---
+
+        print(f"DEBUG A* Path: Waypoints definidos final ({len(self.waypoints)}): {self.waypoints}")
+        # (Resto da verificação de sanidade...)
+        # --- FIM DA CONSTRUÇÃO ---
+
+        print(f"DEBUG A* Path: Waypoints definidos final ({len(self.waypoints)}): {self.waypoints}")
+
+        # Verificação de sanidade
+        num_waypoints_reais = len(self.waypoints)
+        # O número mínimo esperado é início + 12 casas + fim = 14
+        # Pode ser 15 se Tremy for adicionado e for diferente dos outros
+        if num_waypoints_reais < NUM_CASAS + 2:
+             print(f"Erro A* Caminho: Waypoints únicos insuficientes ({num_waypoints_reais}). Necessário pelo menos {NUM_CASAS + 2}.")
+             self.waypoints = None # Invalida waypoints
 
     def buscar(self):
         if not self.waypoints: return None

@@ -173,3 +173,9 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 ./.trae/
+
+# logs
+logs
+
+# Installer
+installer.sh

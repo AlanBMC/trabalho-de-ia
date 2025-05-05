@@ -8,7 +8,6 @@ import random
 
 # --- Constantes (CORES AJUSTADAS) ---
 PRETO = (0, 0, 0)
-DELAY_MOVIMENTO = 50 # MUDE AQUI A VELOCIDADE DE MOVIMENTO ENZO INSETO
 BRANCO = (255, 255, 255)
 # Valores do CSV mapeados para Cor e Custo
 TERRENOS_INFO = {
@@ -24,7 +23,8 @@ TAMANHO_BLOCO = 15
 NOME_ARQUIVO_MAPA = 'coordernadasmapaco.csv'
 VALOR_PONTO_INICIAL = 0
 VALOR_PONTO_FINAL = 13
-CAMINHO_SPRITE = r'/home/alan-moraes/Downloads/' # <<< AJUSTE SE NECESSÁRIO PARAO CAMINHOS DAS SPRITES
+DELAY_MOVIMENTO = 50 # MUDE AQUI A VELOCIDADE DE MOVIMENTO ENZO INSETO
+CAMINHO_SPRITE = r'C:/Users/8761817/Downloads/trabalho-de-ia-1' # <<< AJUSTE SE NECESSÁRIO PARAO CAMINHOS DAS SPRITES
 # -------------------------------------
 
 # --- Informações Cavaleiros (SEM ALTERAÇÕES) ---
@@ -616,6 +616,9 @@ def simular_caminho_e_lutas_com_visualizacao(caminho_coords, mapa_obj):
     if not caminho_coords or mapa_obj.posicao_inicial is None:
         print("Erro simulação: Caminho ou posição inicial inválidos.")
         return 0, [], [], "Erro inicial"
+    
+    # Obtém a posição final do mapa
+    posicao_final = mapa_obj.posicao_final
 
     tempo_total = 0.0
     energias_atuais = [cb['energia_inicial'] for cb in mapa_obj.cavaleiros_bronze_info]
@@ -691,7 +694,18 @@ def simular_caminho_e_lutas_com_visualizacao(caminho_coords, mapa_obj):
 
                 if equipe_escolhida_indices is None:
                     print(f"FALHA NA SIMULAÇÃO: {motivo} para {nome_casa}."); texto_info_batalha_atual = f"FALHA! {motivo}!"
-                    status_final = f"Falha-{nome_casa}"; rodando_visualizacao = False; break
+                    status_final = f"Falha-{nome_casa}"
+                    # Salva o log e fecha o jogo em caso de falha
+                    with open('log_simulacao.txt', 'w', encoding='utf-8') as f:
+                        f.write(f"FALHA NA SIMULAÇÃO: {motivo} para {nome_casa}.\n")
+                        f.write(f"Tempo total: {tempo_total:.1f} minutos\n")
+                        f.write("Log das batalhas:\n")
+                        for log in battle_log:
+                            f.write(f"Casa {log[0]+1}: Equipe {log[1]}, Tempo: {log[2]:.1f}\n")
+                    rodando_visualizacao = False
+                    pygame.quit()
+                    sys.exit()
+                    break
                 else:
                     tempo_batalha = Luta.calcular_tempo_batalha(dificuldade_casa, equipe_escolhida_indices, mapa_obj.cavaleiros_bronze_info)
                     tempo_total += tempo_batalha
@@ -709,7 +723,45 @@ def simular_caminho_e_lutas_com_visualizacao(caminho_coords, mapa_obj):
 
                     if all(e <= 0 for e in energias_atuais):
                         print("FALHA: Todos morreram."); texto_info_batalha_atual += " - MORRERAM!"
-                        status_final = "Todos morreram"; rodando_visualizacao = False; break
+                        status_final = "Todos morreram"
+                        # Salva o log e fecha o jogo quando todos morrem
+                        with open('log_simulacao.txt', 'w', encoding='utf-8') as f:
+                            f.write("FALHA: Todos os cavaleiros morreram.\n")
+                            f.write(f"Tempo total: {tempo_total:.1f} minutos\n")
+                            f.write("Log das batalhas:\n")
+                            for log in battle_log:
+                                f.write(f"Casa {log[0]+1}: Equipe {log[1]}, Tempo: {log[2]:.1f}\n")
+                        rodando_visualizacao = False
+                        pygame.quit()
+                        sys.exit()
+                        break
+
+        # Verifica se chegou ao final do caminho
+        if pos_atual_coord == mapa_obj.posicao_final:
+            # Verifica se o tempo total excedeu o limite de 720 minutos
+            if tempo_total > 720:
+                status_final = "Falha-Tempo Excedido"
+                print(f"\nFALHA! Tempo excedido: {tempo_total:.1f} minutos (limite: 720 minutos)")
+            else:
+                status_final = "Sucesso"
+                print(f"\nSUCESSO! Tempo total: {tempo_total:.1f} minutos")
+
+            with open('log_simulacao.txt', 'w', encoding='utf-8') as f:
+                f.write("=== RESULTADO FINAL DA SIMULAÇÃO ===\n\n")
+                f.write(f"Status: {status_final}\n")
+                f.write(f"Tempo Total: {tempo_total:.2f} minutos\n\n")
+                f.write("Log das Batalhas:\n")
+                for log in battle_log:
+                    f.write(f"Casa {log[0]+1} ({mapa_obj.cavaleiros_ouro_info[log[0]]['nome']})\n")
+                    f.write(f"  Equipe: {', '.join(log[1])}\n")
+                    f.write(f"  Tempo de Batalha: {log[2]:.1f} minutos\n")
+                    f.write(f"  Energias após batalha: {log[3]}\n\n")
+                f.write("\nEnergias Finais dos Cavaleiros:\n")
+                for i, energia in enumerate(energias_atuais):
+                    f.write(f"{mapa_obj.cavaleiros_bronze_info[i]['nome']}: {energia}\n")
+            rodando_visualizacao = False
+            pygame.quit()
+            sys.exit()
 
         # Desenho e Controle de Tempo
         agora = pygame.time.get_ticks()
@@ -732,9 +784,9 @@ def simular_caminho_e_lutas_com_visualizacao(caminho_coords, mapa_obj):
 
     # Fim do Loop
     if rodando_visualizacao:
-        status_final = "Sucesso"
         print("\n--- Simulação com Visualização Concluída ---")
-        mapa_obj.desenhar_estado_simulacao("Caminho Concluído!", f"Tempo Final: {tempo_total:.1f}")
+        texto_status = "SUCESSO!" if status_final == "Sucesso" else "FALHA!"
+        mapa_obj.desenhar_estado_simulacao(f"{texto_status} {status_final}", f"Tempo Final: {tempo_total:.1f}")
         pygame.time.wait(3000) # Espera 3 seg no final
 
     pygame.quit()

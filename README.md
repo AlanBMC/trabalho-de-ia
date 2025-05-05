@@ -3,7 +3,7 @@
 
 **Projeto: A Travessia das 12 Casas - Salvando Atena**
 
-**Grupo:** Alan Bruno Moraes Costa, Enzo Bondan
+**Grupo:** Alan Bruno Moraes Costa, Enzo Bondan & Ricardo Meneses Freire dos Santos 
 
 **Data:** 04 de Maio de 2025
 
@@ -89,4 +89,17 @@ Conforme sugerido nas dicas do trabalho [cite: 44] e validado por tentativas ini
 A solução implementada utiliza uma abordagem híbrida em duas fases para resolver o problema da Travessia das 12 Casas. A Fase 1 emprega o algoritmo A* para determinar o caminho ótimo em termos de custo de terreno, enquanto a Fase 2 simula este caminho e utiliza uma estratégia greedy local para o planejamento das batalhas, balanceando tempo e energia. A visualização em tempo real com Pygame permite acompanhar o progresso do agente.
 
 Esta abordagem demonstrou ser computacionalmente viável, ao contrário de tentativas de resolver ambos os subproblemas simultaneamente com um único A*. A separação permite obter uma solução completa que atende aos requisitos funcionais do trabalho, embora a estratégia greedy para as batalhas não garanta a otimalidade global do tempo total. O sistema é configurável através de arquivos CSV e constantes no código, e apresenta os resultados de forma clara no console e visualmente. Consideramos que o método escolhido é apropriado para a complexidade do problema proposto.
+
+#   Como rodar
+## Instalar as dependencias
+
+```bash
+    pip install pygame 
+    pip istall pyinstaller
+```
+
+## Criar o arquivo executavel 
+```bash
+python -m PyInstaller main.py --onefile  --add-data '"sprites;sprites"'y
+```
 

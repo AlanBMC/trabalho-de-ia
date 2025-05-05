@@ -1,0 +1,73 @@
+=== RESULTADO FINAL DA SIMULAÇÃO ===
+
+Status: Falha-Tempo Excedido
+Tempo Total: 1010.78 minutos
+
+Log das Batalhas:
+Casa 1 (Afrodite)
+  Equipe: Seiya
+  Tempo de Batalha: 80.0 minutos
+  Energias após batalha: (4, 5, 5, 5, 5)
+
+Casa 2 (Mu)
+  Equipe: Seiya
+  Tempo de Batalha: 33.3 minutos
+  Energias após batalha: (3, 5, 5, 5, 5)
+
+Casa 3 (Aldebaran)
+  Equipe: Seiya
+  Tempo de Batalha: 36.7 minutos
+  Energias após batalha: (2, 5, 5, 5, 5)
+
+Casa 4 (Saga)
+  Equipe: Seiya
+  Tempo de Batalha: 40.0 minutos
+  Energias após batalha: (1, 5, 5, 5, 5)
+
+Casa 5 (Máscara da Morte)
+  Equipe: Seiya
+  Tempo de Batalha: 46.7 minutos
+  Energias após batalha: (0, 5, 5, 5, 5)
+
+Casa 6 (Aiolia)
+  Equipe: Shiryu
+  Tempo de Batalha: 53.6 minutos
+  Energias após batalha: (0, 4, 5, 5, 5)
+
+Casa 7 (Shaka)
+  Equipe: Shiryu
+  Tempo de Batalha: 57.1 minutos
+  Energias após batalha: (0, 3, 5, 5, 5)
+
+Casa 8 (Dohko)
+  Equipe: Shiryu
+  Tempo de Batalha: 60.7 minutos
+  Energias após batalha: (0, 2, 5, 5, 5)
+
+Casa 9 (Milo)
+  Equipe: Shiryu
+  Tempo de Batalha: 64.3 minutos
+  Energias após batalha: (0, 1, 5, 5, 5)
+
+Casa 10 (Aiolos)
+  Equipe: Shiryu
+  Tempo de Batalha: 67.9 minutos
+  Energias após batalha: (0, 0, 5, 5, 5)
+
+Casa 11 (Shura)
+  Equipe: Hyoga
+  Tempo de Batalha: 76.9 minutos
+  Energias após batalha: (0, 0, 4, 5, 5)
+
+Casa 12 (Camus)
+  Equipe: Hyoga
+  Tempo de Batalha: 84.6 minutos
+  Energias após batalha: (0, 0, 3, 5, 5)
+
+
+Energias Finais dos Cavaleiros:
+Seiya: 0
+Shiryu: 0
+Hyoga: 3
+Shun: 5
+Ikki: 5

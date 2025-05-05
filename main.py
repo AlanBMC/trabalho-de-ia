@@ -24,7 +24,7 @@ TAMANHO_BLOCO = 15
 NOME_ARQUIVO_MAPA = 'coordernadasmapaco.csv'
 VALOR_PONTO_INICIAL = 0
 VALOR_PONTO_FINAL = 13
-CAMINHO_SPRITE = r'/home/alan-moraes/Downloads/' # <<< AJUSTE SE NECESSÁRIO PARAO CAMINHOS DAS SPRITES
+CAMINHO_SPRITE = '.' # <<< AJUSTE SE NECESSÁRIO PARAO CAMINHOS DAS SPRITES
 # -------------------------------------
 
 # --- Informações Cavaleiros (SEM ALTERAÇÕES) ---

@@ -100,6 +100,6 @@ Esta abordagem demonstrou ser computacionalmente viável, ao contrário de tenta
 
 ## Criar o arquivo executavel 
 ```bash
-python -m PyInstaller main.py --onefile  --add-data '"sprites;sprites"'y
+python -m PyInstaller main.py --onefile  --add-data '"sprites;sprites"'
 ```
 

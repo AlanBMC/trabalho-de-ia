@@ -91,6 +91,9 @@ A solução implementada utiliza uma abordagem híbrida em duas fases para resol
 Esta abordagem demonstrou ser computacionalmente viável, ao contrário de tentativas de resolver ambos os subproblemas simultaneamente com um único A*. A separação permite obter uma solução completa que atende aos requisitos funcionais do trabalho, embora a estratégia greedy para as batalhas não garanta a otimalidade global do tempo total. O sistema é configurável através de arquivos CSV e constantes no código, e apresenta os resultados de forma clara no console e visualmente. Consideramos que o método escolhido é apropriado para a complexidade do problema proposto.
 
 #   Como rodar
+
+Mudar algumas variaveis globais como CAMINHO_SPRITE = r'caminho das sprites'  e DELAY_MOVIMENTO para ajustar a velocidade em que os personagens percorrem o mapa.
+
 ## Instalar as dependencias
 
 ```bash

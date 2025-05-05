@@ -3,7 +3,7 @@
 
 **Projeto: A Travessia das 12 Casas - Salvando Atena**
 
-**Grupo:** Alan Bruno Moraes Costa, Enzo Bondan
+**Grupo:** Alan Bruno Moraes Costa, Enzo Bondan, Ricardo Meneses Freire dos Santos
 
 **Data:** 04 de Maio de 2025
 
@@ -54,13 +54,21 @@ Conforme sugerido nas dicas do trabalho [cite: 44] e validado por tentativas ini
 * **Mapa:** O ambiente do Santuário é carregado a partir do arquivo `coordernadasmapaco.csv`. A classe `MapaAereo` lê este arquivo e o representa internamente como uma lista de listas (matriz). O tamanho lido foi de 43x43 células, atendendo ao requisito de 42x42 [cite: 30] (a diferença pode ser devido a linhas/colunas extras no CSV). Os valores no CSV definem os tipos de terreno (14, 15, 16), as casas (valores de 1 a 12 ou 2 a 13 - ajustado no código para o intervalo correto encontrado no CSV), a entrada (Valor 0, Vermelho) [cite: 31] e o objetivo (Valor 1, Verde)[cite: 32]. A estrutura do `TERRENOS_INFO` permite fácil modificação das cores e custos associados a cada tipo de terreno[cite: 37].
 * **Cavaleiros:** As informações (nome, poder cósmico, energia inicial, caminho do sprite) dos Cavaleiros de Bronze e de Ouro (incluindo dificuldade das casas) são definidas em listas de dicionários (`CAVALEIROS_BRONZE_INFO`, `CAVALEIROS_OURO_INFO`) no início do código, permitindo fácil edição[cite: 39].
 
-**4. Utilização do Aplicativo**
+### **4 Utilização do Aplicativo**
 
-* **Pré-requisitos:** Python 3 e a biblioteca Pygame (`pip install pygame`).
-* **Arquivos:** É necessário ter o script Python (`seu_arquivo.py`), o arquivo `coordernadasmapaco.csv` no mesmo diretório e a estrutura de pastas com os sprites dos cavaleiros acessível pelo caminho definido na constante `CAMINHO_SPRITE`.
-* **Execução:** Abra um terminal ou prompt de comando, navegue até o diretório do projeto e execute: `python seu_arquivo.py`.
+* **Arquivos:** É necessário ter o script Python (`seu_arquivo.py`) ou o arquivo executável e o arquivo `coordernadasmapaco.csv` no mesmo diretório e a estrutura de pastas com os sprites dos cavaleiros acessível pelo caminho definido na constante `CAMINHO_SPRITE`.
+
 * **Funcionamento:** O programa iniciará, carregará o mapa e os dados. A Fase 1 (Busca A*) será executada (logs no console indicarão o progresso). Se um caminho for encontrado, a Fase 2 (Simulação com Visualização) começará. Uma janela Pygame aparecerá, mostrando o mapa e os cavaleiros. A animação mostrará os cavaleiros de bronze se movendo pelo caminho encontrado, com informações de tempo e batalhas sendo exibidas na tela e no console. A simulação termina quando o objetivo é alcançado, todos os cavaleiros morrem, ou a janela é fechada.
 * **Saída:** Ao final da execução (ou interrupção), o console exibirá um resumo final com o status (Sucesso/Falha), o tempo total gasto, um log detalhado das batalhas (casa, equipe, tempo) e as energias finais dos cavaleiros.
+
+**4.1 Com código fonte**
+
+* **Pré-requisitos:** Python 3 e a biblioteca Pygame (`pip install pygame`).
+* **Execução:** Abra um terminal ou prompt de comando, navegue até o diretório do projeto e execute: `python seu_arquivo.py`.
+
+**4.1 Com o arquivo binário (Windows 11)**
+
+* **Execução:** Apenas execute o arquivo `main.exe` e o programa executará automaticamente e salvará o log de eventos na pasta `logs`.
 
 **5. Resultados Obtidos**
 

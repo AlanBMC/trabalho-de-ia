@@ -38,18 +38,18 @@ CAVALEIROS_BRONZE_INFO = [
 NUM_CAVALEIROS_BRONZE = len(CAVALEIROS_BRONZE_INFO)
 
 CAVALEIROS_OURO_INFO = sorted([
-    {'casa': 2, 'nome': 'Mu', 'dificuldade': 50, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/MU.png'},
-    {'casa': 3, 'nome': 'Aldebaran', 'dificuldade': 55, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Aldebaran (Taurus).png'},
-    {'casa': 4, 'nome': 'Saga', 'dificuldade': 60, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/SAGA.png'},
-    {'casa': 5, 'nome': 'Máscara da Morte', 'dificuldade': 70, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Mdm.png'},
-    {'casa': 6, 'nome': 'Aiolia', 'dificuldade': 75, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aioria.png'},
-    {'casa': 7, 'nome': 'Shaka', 'dificuldade': 80, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shaka.png'},
-    {'casa': 8, 'nome': 'Dohko', 'dificuldade': 85, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Athena_Dohko.png'},
-    {'casa': 9, 'nome': 'Milo', 'dificuldade': 90, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Milo.png'},
-    {'casa': 10, 'nome': 'Aiolos', 'dificuldade': 95, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aiorios.png'},
-    {'casa': 11, 'nome': 'Shura', 'dificuldade': 100, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shura.png'},
-    {'casa': 12, 'nome': 'Camus', 'dificuldade': 110, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/KAMUS.png'},
-    {'casa': 1, 'nome': 'Afrodite', 'dificuldade': 120, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Afrodite.png'},
+    {'casa': 1, 'nome': 'Mu', 'dificuldade': 50, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/MU.png'},
+    {'casa': 2, 'nome': 'Aldebaran', 'dificuldade': 55, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Aldebaran (Taurus).png'},
+    {'casa': 3, 'nome': 'Saga', 'dificuldade': 60, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/SAGA.png'},
+    {'casa': 4, 'nome': 'Máscara da Morte', 'dificuldade': 70, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Mdm.png'},
+    {'casa': 5, 'nome': 'Aiolia', 'dificuldade': 75, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aioria.png'},
+    {'casa': 6, 'nome': 'Shaka', 'dificuldade': 80, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shaka.png'},
+    {'casa': 7, 'nome': 'Dohko', 'dificuldade': 85, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/#Athena_Dohko.png'},
+    {'casa': 8, 'nome': 'Milo', 'dificuldade': 90, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Milo.png'},
+    {'casa': 9, 'nome': 'Aiolos', 'dificuldade': 95, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Aiorios.png'},
+    {'casa': 10, 'nome': 'Shura', 'dificuldade': 100, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Athena_Shura.png'},
+    {'casa': 11, 'nome': 'Camus', 'dificuldade': 110, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/KAMUS.png'},
+    {'casa': 12, 'nome': 'Afrodite', 'dificuldade': 120, 'sprite_path': f'{CAMINHO_SPRITE}/Saint Seiya/Cavaleiros de Ouro/_Afrodite.png'},
 ], key=lambda c: c['casa'])
 NUM_CASAS = len(CAVALEIROS_OURO_INFO)
 

@@ -593,56 +593,64 @@ class BuscaAEstrelaCaminho:
 # --- FIM DA CLASSE BuscaAEstrelaCaminho ---
 
 
-# --- Fase 2: Simulação e Escolha Greedy de Equipes ---
-
-def escolher_equipe_greedy_final(casa_index, energias_atuais, cav_ouro_info, cav_bronze_info):
-    """ Escolhe a equipe focando no menor tempo, mas limitando o tamanho da equipe. """
+# --- Fase 2: Simulação e Escolha de Equipes ---
+def escolher_equipe_balanced(casa_index, energias_atuais, cav_ouro_info, cav_bronze_info, tempo_total, tempo_limite=720):
+    """
+    Seleção dinâmica que equilibra:
+      1) cumprir o avg_time para não ultrapassar o limite,
+      2) manter potencial de poder futuro,
+      3) nivelar consumo de energia entre todos.
+    Para cada possível dupla ou solo:
+      - calcula tempo da luta,
+      - simula energias pós-batalha,
+      - avalia score = alpha * (soma de energia_restante * poder) - beta * (variância das energias restantes) - gamma * penalidade_tempo.
+    Retorna a equipe com maior score.
+    """
     from itertools import combinations
-    if casa_index >= len(cav_ouro_info): return None, "Erro: Índice"
+    import statistics
 
-    dificuldade_casa = cav_ouro_info[casa_index]['dificuldade']
-    # Lista de vivos: (indice, poder, energia)
-    vivos = [(i, cb['poder'], energias_atuais[i]) for i, cb in enumerate(cav_bronze_info) if energias_atuais[i] > 0]
-    if not vivos: return None, "Ninguém vivo"
+    num_casas = len(cav_ouro_info)
+    dificuldade = cav_ouro_info[casa_index]['dificuldade']
+    energies = list(energias_atuais)
+    powers = [cb['poder'] for cb in cav_bronze_info]
 
-    melhor_equipe_geral_indices = None
-    menor_tempo_geral = float('inf')
-    # --- AJUSTE AQUI: Limite o tamanho máximo da equipe ---
-    max_tam_equipe_greedy = 2 # Ex: Não usar mais que 2 cavaleiros
-    # -----------------------------------------------------
+    # parâmetros de peso: ajustar conforme necessidade
+    alpha = 1.0  # valoriza energia futura ponderada por poder
+    beta = 5.0   # penaliza alta disparidade de energia
+    gamma = 100.0  # penaliza tempo acima do avg_time severamente
 
-    # Avalia equipes de tamanho 1 até max_tam_equipe_greedy
-    for tam in range(1, min(len(vivos), max_tam_equipe_greedy) + 1):
-        melhor_equipe_tam = None
-        menor_tempo_tam = float('inf')
+    # avg_time restante
+    rem = max(1e-9, tempo_limite - tempo_total)
+    avg_time = rem / (num_casas - casa_index)
 
-        for combo_tuplas in combinations(vivos, tam):
-            indices = [item[0] for item in combo_tuplas]
-            poder_total = sum(item[1] for item in combo_tuplas)
-            if poder_total > 0:
-                tempo = dificuldade_casa / poder_total
-                if tempo < menor_tempo_tam:
-                    menor_tempo_tam = tempo
-                    melhor_equipe_tam = indices
+    candidatos = []
+    vivos = [i for i, e in enumerate(energies) if e > 0]
+    # gera pares e solos
+    for size in (2, 1):
+        for combo in combinations(vivos, size):
+            soma_p = sum(powers[i] for i in combo)
+            if soma_p <= 0:
+                continue
+            tempo = dificuldade / soma_p
+            # simula energias pós
+            new_energies = energies.copy()
+            for i in combo:
+                new_energies[i] -= 1
+            # score componentes
+            valor_futuro = sum(e * p for e, p in zip(new_energies, powers))
+            var_energia = statistics.pvariance(new_energies)
+            penalidade = 0 if tempo <= avg_time else gamma * (tempo - avg_time)
+            score = alpha * valor_futuro - beta * var_energia - penalidade
+            candidatos.append((combo, score, tempo))
+        if candidatos:
+            # seleciona maior score
+            best_combo, _, _ = max(candidatos, key=lambda x: x[1])
+            label = 'Pair' if len(best_combo)==2 else 'Solo'
+            return list(best_combo), f'Balanced {label}'
 
-        # Compara com a melhor geral (entre os tamanhos já testados)
-        if melhor_equipe_tam and menor_tempo_tam < menor_tempo_geral:
-            menor_tempo_geral = menor_tempo_tam
-            melhor_equipe_geral_indices = melhor_equipe_tam
+    # fallback genérico
+    return [], 'No one'
 
-    # Se nenhuma equipe até o tamanho limite funcionou, tenta usar todos os vivos
-    if melhor_equipe_geral_indices is None:
-        todos_indices = [item[0] for item in vivos]
-        poder_todos = sum(item[1] for item in vivos)
-        if poder_todos > 0:
-            tempo_todos = dificuldade_casa / poder_todos
-            # Considera usar todos APENAS se nenhuma outra equipe funcionou
-            return todos_indices, f"Fallback: Todos (tempo {tempo_todos:.1f})"
-        else:
-            return None, "Nenhuma equipe vence" # Nem todos juntos
-
-    # Retorna a melhor equipe encontrada dentro do limite de tamanho
-    return melhor_equipe_geral_indices, f"Greedy Tam<= {max_tam_equipe_greedy} (tempo {menor_tempo_geral:.1f})"
 
 
 def simular_caminho_e_lutas_com_visualizacao(caminho_coords, mapa_obj):
@@ -721,8 +729,8 @@ def simular_caminho_e_lutas_com_visualizacao(caminho_coords, mapa_obj):
                 print(f"Energias Atuais: {['{}:{}'.format(mapa_obj.cavaleiros_bronze_info[i]['nome'][0], energias_atuais[i]) for i in range(len(energias_atuais))]}")
 
                 # ---> USA A NOVA FUNÇÃO GREEDY <---
-                equipe_escolhida_indices, motivo = escolher_equipe_greedy_final(
-                    casa_index, energias_atuais, mapa_obj.cavaleiros_ouro_info, mapa_obj.cavaleiros_bronze_info
+                equipe_escolhida_indices, motivo = escolher_equipe_balanced(
+                    casa_index, energias_atuais, mapa_obj.cavaleiros_ouro_info, mapa_obj.cavaleiros_bronze_info, tempo_total
                 )
 
                 if equipe_escolhida_indices is None:

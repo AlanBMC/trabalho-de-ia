@@ -24,7 +24,7 @@ NOME_ARQUIVO_MAPA = 'coordernadasmapaco.csv'
 VALOR_PONTO_INICIAL = 0
 VALOR_PONTO_FINAL = 13
 DELAY_MOVIMENTO = 50 # MUDE AQUI A VELOCIDADE DE MOVIMENTO ENZO INSETO
-CAMINHO_SPRITE = r'C:/Users/8761817/Downloads/trabalho-de-ia-1' # <<< AJUSTE SE NECESSÁRIO PARAO CAMINHOS DAS SPRITES
+CAMINHO_SPRITE = r'.' # <<< AJUSTE SE NECESSÁRIO PARAO CAMINHOS DAS SPRITES
 # -------------------------------------
 
 # --- Informações Cavaleiros (SEM ALTERAÇÕES) ---
@@ -435,6 +435,39 @@ class MapaAereo:
             pygame.quit()
             sys.exit(1)
 
+    def salvar_imagem_caminho(self, caminho_coords, nome_arquivo="caminho_destacado.png"):
+        """Gera uma imagem do mapa com o caminho destacado e salva como arquivo."""
+        try:
+            # Cria uma superfície para desenhar o mapa
+            imagem = pygame.Surface((self.largura_tela, self.altura_tela))
+            imagem.fill(PRETO)
+
+            # Desenha o mapa
+            for i, linha in enumerate(self.mapa):
+                for j, valor in enumerate(linha):
+                    x = j * TAMANHO_BLOCO
+                    y = i * TAMANHO_BLOCO
+                    cor = self._obter_cor(valor)
+
+                    # Escurece os blocos que não estão no caminho
+                    if (j, i) not in caminho_coords:
+                        cor = tuple(max(0, c // 2) for c in cor)  # Reduz o brilho pela metade
+
+                    pygame.draw.rect(imagem, cor, (x, y, TAMANHO_BLOCO, TAMANHO_BLOCO))
+                    pygame.draw.rect(imagem, PRETO, (x, y, TAMANHO_BLOCO, TAMANHO_BLOCO), 1)
+
+            # Salva a imagem gerada
+            pygame.image.save(imagem, nome_arquivo)
+            log_message = f"Imagem do caminho salva como '{nome_arquivo}'."
+            print(log_message)
+        except Exception as e:
+            log_message = f"Erro ao salvar imagem do caminho: {e}"
+            print(log_message)
+
+        # Escreve o log no arquivo
+        with open('log_simulacao.txt', 'a', encoding='utf-8') as log_file:
+            log_file.write(log_message + '\n')
+
 # --- FIM DA CLASSE MapaAereo ---
 
 
@@ -816,6 +849,8 @@ def main():
         print("Falha ao encontrar o caminho físico. Abortando."); sys.exit(1)
     print(f"Caminho físico encontrado com {len(caminho_coords)} passos.")
 
+    mapa_aereo.salvar_imagem_caminho(caminho_coords, "caminho_encontrado.png")
+
     # --- Fase 2: Simular COM VISUALIZAÇÃO ---
     tempo_final, log_batalhas, energias_finais, status_simulacao = simular_caminho_e_lutas_com_visualizacao(
         caminho_coords, mapa_aereo
@@ -843,6 +878,8 @@ def main():
         print(f"\nFALHA na missão: {status_simulacao}")
 
     print("\nExecução concluída.")
+
+    
 
 if __name__ == '__main__':
     main()
